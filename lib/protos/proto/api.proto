@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package org.seekloud.theia.faceAnalysis.pb;
+
+
+message ImgData {
+
+  int32 width = 1;
+  int32 height = 2;
+  int32 pixel_length = 3; //by byte
+  bytes data = 4;
+
+}
+
+message ImageReq{
+    int32 frame = 1;
+    ImgData img = 2;
+}
+
+message MarkRsp{
+    int32 frame = 1;
+    repeated int32 p = 2;
+}
