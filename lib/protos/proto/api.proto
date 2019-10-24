@@ -2,7 +2,6 @@ syntax = "proto3";
 
 package org.seekloud.theia.faceAnalysis.pb;
 
-
 message ImgData {
 
   int32 width = 1;
@@ -17,7 +16,16 @@ message ImageReq{
     ImgData img = 2;
 }
 
+message Point{
+    int32 x=1;
+    int32 y=2;
+}
+
+message Mask{
+    repeated Point p = 1;
+}
+
 message MarkRsp{
     int32 frame = 1;
-    repeated int32 p = 2;
+    repeated Mask l = 2;
 }
