@@ -24,6 +24,7 @@ facer = FaceAna()
 
 class GrpcServer(service.FaceServerServicer):
     def predict(self, request, context):
+        # fixme 此处需要转化数据格式
         image = to_np_array(request.img)
         star = time.time()
         boxes, landmarks, states = facer.run(image)
@@ -32,7 +33,7 @@ class GrpcServer(service.FaceServerServicer):
             mask = []
             for landmarks_index in range(landmarks[face_index].shape[0]):
                 x_y = landmarks[face_index][landmarks_index]
-                mask.append(Point(x=x_y[0],y=x_y[1]))
+                mask.append(Point(x=x_y[0], y=x_y[1]))
             mark.append(Mask(mask=mask))
 
         duration = time.time() - star
