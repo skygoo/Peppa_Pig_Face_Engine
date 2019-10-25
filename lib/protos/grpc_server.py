@@ -28,17 +28,15 @@ facer.run(cv2.imread("/Users/sky/PycharmProjects/Peppa_Pig_Face_Engine/figure/pn
 
 class GrpcServer(service.FaceServerServicer):
     def predict(self, request, context):
-        # fixme 此处需要转化数据格式
-        print("start...", request.frame)
         star = time.time()
         # print(request.img)
         image = to_np_array(request.img)
 
         cv2.imwrite("/Users/sky/PycharmProjects/Peppa_Pig_Face_Engine/img/test_%d.jpg" % (request.frame), image)
 
-        print('reshape cost %f s' % (time.time() - star))
+        print(request.frame, 'reshape cost %f s' % (time.time() - star))
         boxes, landmarks, states = facer.run(image)
-        print('detect cost %f s' % (time.time() - star))
+        print(request.frame, 'detect cost %f s' % (time.time() - star))
         mark = MarkRsp()
         mark.frame = request.frame
         for face_index in range(landmarks.shape[0]):
@@ -48,5 +46,5 @@ class GrpcServer(service.FaceServerServicer):
                 x_y = landmarks[face_index][landmarks_index]
                 poi.x = x_y[0]
                 poi.y = x_y[1]
-        print('one iamge cost %f s' % (time.time() - star))
+        print(request.frame, 'one iamge cost %f s' % (time.time() - star))
         return mark
