@@ -12,7 +12,6 @@ import grpc
 import lib.protos.genpy.service_pb2_grpc as service
 from lib.protos.grpc_server import GrpcServer
 
-
 if __name__ == '__main__':
     server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
     service.add_FaceServerServicer_to_server(

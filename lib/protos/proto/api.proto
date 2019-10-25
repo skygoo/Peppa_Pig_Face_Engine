@@ -8,17 +8,16 @@ message ImgData {
   int32 height = 2;
   int32 pixel_length = 3; //by byte
   bytes data = 4;
-
 }
 
 message ImageReq{
-    int32 frame = 1;
+    int64 frame = 1;
     ImgData img = 2;
 }
 
 message Point{
-    int32 x=1;
-    int32 y=2;
+    float x=1;
+    float y=2;
 }
 
 message Mask{
@@ -26,6 +25,6 @@ message Mask{
 }
 
 message MarkRsp{
-    int32 frame = 1;
+    int64 frame = 1;
     repeated Mask l = 2;
 }

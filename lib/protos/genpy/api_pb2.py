@@ -20,7 +20,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   package='org.seekloud.theia.faceAnalysis.pb',
   syntax='proto3',
   serialized_options=None,
-  serialized_pb=_b('\n\tapi.proto\x12\"org.seekloud.theia.faceAnalysis.pb\"L\n\x07ImgData\x12\r\n\x05width\x18\x01 \x01(\x05\x12\x0e\n\x06height\x18\x02 \x01(\x05\x12\x14\n\x0cpixel_length\x18\x03 \x01(\x05\x12\x0c\n\x04\x64\x61ta\x18\x04 \x01(\x0c\"S\n\x08ImageReq\x12\r\n\x05\x66rame\x18\x01 \x01(\x05\x12\x38\n\x03img\x18\x02 \x01(\x0b\x32+.org.seekloud.theia.faceAnalysis.pb.ImgData\"\x1d\n\x05Point\x12\t\n\x01x\x18\x01 \x01(\x05\x12\t\n\x01y\x18\x02 \x01(\x05\"<\n\x04Mask\x12\x34\n\x01p\x18\x01 \x03(\x0b\x32).org.seekloud.theia.faceAnalysis.pb.Point\"M\n\x07MarkRsp\x12\r\n\x05\x66rame\x18\x01 \x01(\x05\x12\x33\n\x01l\x18\x02 \x03(\x0b\x32(.org.seekloud.theia.faceAnalysis.pb.Maskb\x06proto3')
+  serialized_pb=_b('\n\tapi.proto\x12\"org.seekloud.theia.faceAnalysis.pb\"L\n\x07ImgData\x12\r\n\x05width\x18\x01 \x01(\x05\x12\x0e\n\x06height\x18\x02 \x01(\x05\x12\x14\n\x0cpixel_length\x18\x03 \x01(\x05\x12\x0c\n\x04\x64\x61ta\x18\x04 \x01(\x0c\"S\n\x08ImageReq\x12\r\n\x05\x66rame\x18\x01 \x01(\x03\x12\x38\n\x03img\x18\x02 \x01(\x0b\x32+.org.seekloud.theia.faceAnalysis.pb.ImgData\"\x1d\n\x05Point\x12\t\n\x01x\x18\x01 \x01(\x02\x12\t\n\x01y\x18\x02 \x01(\x02\"<\n\x04Mask\x12\x34\n\x01p\x18\x01 \x03(\x0b\x32).org.seekloud.theia.faceAnalysis.pb.Point\"M\n\x07MarkRsp\x12\r\n\x05\x66rame\x18\x01 \x01(\x03\x12\x33\n\x01l\x18\x02 \x03(\x0b\x32(.org.seekloud.theia.faceAnalysis.pb.Maskb\x06proto3')
 )
 
 
@@ -87,7 +87,7 @@ _IMAGEREQ = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='frame', full_name='org.seekloud.theia.faceAnalysis.pb.ImageReq.frame', index=0,
-      number=1, type=5, cpp_type=1, label=1,
+      number=1, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
@@ -125,15 +125,15 @@ _POINT = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='x', full_name='org.seekloud.theia.faceAnalysis.pb.Point.x', index=0,
-      number=1, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      number=1, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
     _descriptor.FieldDescriptor(
       name='y', full_name='org.seekloud.theia.faceAnalysis.pb.Point.y', index=1,
-      number=2, type=5, cpp_type=1, label=1,
-      has_default_value=False, default_value=0,
+      number=2, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR),
@@ -194,7 +194,7 @@ _MARKRSP = _descriptor.Descriptor(
   fields=[
     _descriptor.FieldDescriptor(
       name='frame', full_name='org.seekloud.theia.faceAnalysis.pb.MarkRsp.frame', index=0,
-      number=1, type=5, cpp_type=1, label=1,
+      number=1, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,

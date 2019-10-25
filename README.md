@@ -62,3 +62,8 @@ Hope the codes can help you, contact me if u have any question( 2120140200@mail.
 
 - [ ]  Transfer to tensorflow 2.0   ing....
 - [ ]  Add some GAN model to make it fun  ing....
+
+
+## modify for faceAnalysis(2019/10/24)
+
+* Communicate with the client using GRPC

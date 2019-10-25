@@ -5,9 +5,11 @@ import sys
 import time
 import lib.protos.genpy.service_pb2_grpc as service
 from lib.protos.genpy.api_pb2 import MarkRsp, Point, Mask
+import lib.protos.genpy.api_pb2
 
 from lib.core.api.facer import FaceAna
 import numpy as np
+import cv2
 
 
 def to_np_array(image_data, dtype=np.uint8):
@@ -20,23 +22,31 @@ def to_np_array(image_data, dtype=np.uint8):
 
 
 facer = FaceAna()
+# remind 消除初始化时间
+facer.run(cv2.imread("/Users/sky/PycharmProjects/Peppa_Pig_Face_Engine/figure/png_300.png"))
 
 
 class GrpcServer(service.FaceServerServicer):
     def predict(self, request, context):
         # fixme 此处需要转化数据格式
-        image = to_np_array(request.img)
+        print("start...", request.frame)
         star = time.time()
+        # print(request.img)
+        image = to_np_array(request.img)
+
+        cv2.imwrite("/Users/sky/PycharmProjects/Peppa_Pig_Face_Engine/img/test_%d.jpg" % (request.frame), image)
+
+        print('reshape cost %f s' % (time.time() - star))
         boxes, landmarks, states = facer.run(image)
-        mark = []
+        print('detect cost %f s' % (time.time() - star))
+        mark = MarkRsp()
+        mark.frame = request.frame
         for face_index in range(landmarks.shape[0]):
-            mask = []
+            mask = mark.l.add()
             for landmarks_index in range(landmarks[face_index].shape[0]):
+                poi = mask.p.add()
                 x_y = landmarks[face_index][landmarks_index]
-                mask.append(Point(x=x_y[0], y=x_y[1]))
-            mark.append(Mask(mask=mask))
-
-        duration = time.time() - star
-        print('one iamge cost %f s' % (duration))
-
-        return MarkRsp(request.frame, mark)
+                poi.x = x_y[0]
+                poi.y = x_y[1]
+        print('one iamge cost %f s' % (time.time() - star))
+        return mark
