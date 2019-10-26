@@ -23,15 +23,15 @@ def to_np_array(image_data, dtype=np.uint8):
 
 facer = FaceAna()
 # remind 消除初始化时间
-facer.run(cv2.imread("/Users/sky/PycharmProjects/Peppa_Pig_Face_Engine/figure/png_300.png"))
+# facer.run(cv2.imread("/Users/sky/PycharmProjects/Peppa_Pig_Face_Engine/figure/png_300.png"))
 
 
 class GrpcServer(service.FaceServerServicer):
     def predict(self, request, context):
         star = time.time()
-        # print(request.img)
+        print(request.frame)
         image = to_np_array(request.img)
-
+        print(image.shape)
         cv2.imwrite("/Users/sky/PycharmProjects/Peppa_Pig_Face_Engine/img/test_%d.jpg" % (request.frame), image)
 
         print(request.frame, 'reshape cost %f s' % (time.time() - star))

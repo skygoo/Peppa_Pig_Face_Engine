@@ -28,7 +28,7 @@ except grpc.FutureTimeoutError:
 else:
     stub = service.FaceServerStub(channel)
     t1 = time.time()
-    img = cv2.imread('/Users/sky/PycharmProjects/Peppa_Pig_Face_Engine/figure/png_300.png')
+    img = cv2.imread('/Users/sky/PycharmProjects/Peppa_Pig_Face_Engine/img/test_1.jpg')
     # print(type(img))
     #
     # print(img.shape[1])
