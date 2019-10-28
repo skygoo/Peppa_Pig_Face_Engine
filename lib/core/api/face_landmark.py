@@ -103,7 +103,7 @@ class FaceLandmark:
         h, w, _ = crop_image.shape
         crop_image = cv2.resize(crop_image, (cfg.KEYPOINTS.input_shape[1], cfg.KEYPOINTS.input_shape[0]))
 
-        cv2.imshow('i am watching u * * %d'%i,crop_image)
+        # cv2.imshow('i am watching u * * %d'%i,crop_image)
 
         crop_image = crop_image.astype(np.float32)
 
