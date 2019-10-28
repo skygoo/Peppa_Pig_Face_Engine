@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package org.seekloud.theia.faceAnalysis.pb;
+
+
+import "api.proto";
+
+
+service FaceServer {
+    rpc predict (ImageReq) returns (MarkRsp);
+}
