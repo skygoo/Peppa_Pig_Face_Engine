@@ -12,6 +12,9 @@ facer = FaceAna()
 def video(video_path_or_cam):
     vide_capture = cv2.VideoCapture(video_path_or_cam)
 
+    vide_capture.set(3, 640)
+    vide_capture.set(4, 480)
+
     while 1:
 
         ret, image = vide_capture.read()

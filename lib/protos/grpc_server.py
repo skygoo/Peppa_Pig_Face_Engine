@@ -23,18 +23,17 @@ def to_np_array(image_data, dtype=np.uint8):
 
 facer = FaceAna()
 # remind 消除初始化时间
-boxes, landmarks, states = facer.run(cv2.imread("/Users/sky/PycharmProjects/Peppa_Pig_Face_Engine/img/test_2.jpg"))
+boxes, landmarks, states = facer.run(cv2.imread("/Users/sky/PycharmProjects/Peppa_Pig_Face_Engine/img/test_0.jpg"))
 
 
 class GrpcServer(service.FaceServerServicer):
     def predict(self, request, context):
         star = time.time()
-        print(request.frame)
+        # print(request.frame)
         image = to_np_array(request.img)
-        print(image.shape)
+        # print(image.shape)
         # cv2.imwrite("/Users/sky/PycharmProjects/Peppa_Pig_Face_Engine/img/test_%d.jpg" % (request.frame), image)
-
-        print(request.frame, 'reshape cost %f s' % (time.time() - star))
+        # print(request.frame, 'reshape cost %f s' % (time.time() - star))
         boxes, landmarks, states = facer.run(image)
         print(request.frame, 'detect cost %f s' % (time.time() - star))
         mark = MarkRsp()
