@@ -12,7 +12,6 @@ class FaceLandmark:
     """
            the model was constructed by the params in config.py
     """
-
     def __init__(self):
         self.model_path = cfg.KEYPOINTS.model_path
         self.min_face = 20

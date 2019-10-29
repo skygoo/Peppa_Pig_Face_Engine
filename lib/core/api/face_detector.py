@@ -12,12 +12,11 @@ class FaceDetector:
         the model was constructed by the params in config.py
         """
 
-        self.model_path=cfg.DETECT.model_path
-        self.thres=cfg.DETECT.thres
-        self.input_shape=cfg.DETECT.input_shape
+        self.model_path = cfg.DETECT.model_path
+        self.thres = cfg.DETECT.thres
+        self.input_shape = cfg.DETECT.input_shape
         logger.info('INIT THE FACELANDMARK MODEL...')
-        self.model =tf.saved_model.load(cfg.DETECT.model_path)
-
+        self.model = tf.saved_model.load(cfg.DETECT.model_path)
 
     def __call__(self, image):
         """Detect faces.
@@ -40,8 +39,6 @@ class FaceDetector:
         boxes = res['boxes'].numpy()
         scores = res['scores'].numpy()
         num_boxes = res['num_boxes'].numpy()
-
-
 
         ##sqeeze the box
         num_boxes = num_boxes[0]
@@ -66,10 +63,7 @@ class FaceDetector:
             boxes[i] = np.array([boxes[i][1], boxes[i][0], boxes[i][3], boxes[i][2]])
         return np.concatenate([boxes, scores], axis=1)
 
-
-
     def preprocess(self, image, target_height, target_width, label=None):
-
         ###sometimes use in objs detects
         h, w, c = image.shape
 
@@ -85,6 +79,3 @@ class FaceDetector:
         bimage[:h_resized, :w_resized, :] = image_resized
 
         return bimage, scale_x, scale_y
-
-
-
