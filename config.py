@@ -12,7 +12,7 @@ config.DETECT.thres = 0.5
 config.DETECT.input_shape = (512, 512, 3)
 
 config.KEYPOINTS = edict()
-config.KEYPOINTS.model_path = './model/keypoints/resnet/keypoints.pb'
+config.KEYPOINTS.model_path = './model/keypoints/shufflenet/keypoints.pb'
 config.KEYPOINTS.p_num = 68
 config.KEYPOINTS.base_extend_range = [0.2, 0.3]
 config.KEYPOINTS.input_shape = (160, 160, 3)  # input size during training , 240

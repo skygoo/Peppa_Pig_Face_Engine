@@ -1,50 +1,47 @@
-#-*-coding:utf-8-*-
+# -*-coding:utf-8-*-
 import tensorflow as tf
 import cv2
 import numpy as np
 
 from config import config as cfg
 
+
 class FaceLandmark:
     """
            the model was constructed by the params in config.py
     """
+
     def __init__(self):
-        self.model_path=cfg.KEYPOINTS.model_path
-        self.min_face=20
-        self.keypoint_num=cfg.KEYPOINTS.p_num*2
+        self.model_path = cfg.KEYPOINTS.model_path
+        self.min_face = 20
+        self.keypoint_num = cfg.KEYPOINTS.p_num * 2
 
         self._graph = tf.Graph()
 
         with self._graph.as_default():
-
             self._graph, self._sess = self.init_model(self.model_path)
             self.img_input = tf.get_default_graph().get_tensor_by_name('tower_0/images:0')
             self.embeddings = tf.get_default_graph().get_tensor_by_name('tower_0/prediction:0')
             self.training = tf.get_default_graph().get_tensor_by_name('training_flag:0')
 
-            self.landmark=self.embeddings[:,:self.keypoint_num]
-            self.headpose=self.embeddings[:,-7:-4]*90.
-            self.state=tf.nn.sigmoid(self.embeddings[:,-4:])
+            self.landmark = self.embeddings[:, :self.keypoint_num]
+            self.headpose = self.embeddings[:, -7:-4] * 90.
+            self.state = tf.nn.sigmoid(self.embeddings[:, -4:])
 
-
-    def __call__(self,img,bboxes):
+    def __call__(self, img, bboxes):
         #### should be batched process
         #### but process one by one, more simple
 
-
-        landmark_result=[]
-        state_result=[]
-        for i,bbox in enumerate(bboxes):
-            landmark,state=self._one_shot_run(img,bbox,i)
+        landmark_result = []
+        state_result = []
+        for i, bbox in enumerate(bboxes):
+            landmark, state = self._one_shot_run(img, bbox, i)
             if landmark is not None:
                 landmark_result.append(landmark)
                 state_result.append(state)
-        return np.array(landmark_result),np.array(state_result)
+        return np.array(landmark_result), np.array(state_result)
 
-
-
-    def simple_run(self,cropped_img):
+    def simple_run(self, cropped_img):
 
         """
         this func just run with one face
@@ -53,22 +50,15 @@ class FaceLandmark:
         """
 
         with self._graph.as_default():
+            cropped_img = np.expand_dims(cropped_img, axis=0)
 
-            cropped_img=np.expand_dims(cropped_img,axis=0)
+            landmark, p, states = self._sess.run([self.landmark, self.headpose, self.state], \
+                                                 feed_dict={self.img_input: cropped_img, \
+                                                            self.training: False})
 
-            landmark,p,states = self._sess.run([self.landmark,self.headpose,self.state], \
-                                                    feed_dict={self.img_input: cropped_img, \
-                                                               self.training: False})
+        return landmark, states
 
-        return landmark,states
-
-
-
-
-
-
-
-    def _one_shot_run(self,image,bbox,i):
+    def _one_shot_run(self, image, bbox, i):
         """
 
         :param image: raw image
@@ -78,27 +68,26 @@ class FaceLandmark:
         """
 
         ##preprocess
-        bbox_width  = bbox[2] - bbox[0]
+        bbox_width = bbox[2] - bbox[0]
         bbox_height = bbox[3] - bbox[1]
-        if bbox_width<=self.min_face or bbox_height<=self.min_face:
-            return None,None
+        if bbox_width <= self.min_face or bbox_height <= self.min_face:
+            return None, None
         add = int(max(bbox_width, bbox_height))
         bimg = cv2.copyMakeBorder(image, add, add, add, add, borderType=cv2.BORDER_CONSTANT,
                                   value=cfg.DATA.pixel_means)
         bbox += add
 
-        one_edge=(1+2*cfg.KEYPOINTS.base_extend_range[0]) * bbox_width
-        center=[(bbox[0]+bbox[2])//2,(bbox[1]+bbox[3])//2]
+        one_edge = (1 + 2 * cfg.KEYPOINTS.base_extend_range[0]) * bbox_width
+        center = [(bbox[0] + bbox[2]) // 2, (bbox[1] + bbox[3]) // 2]
 
-        bbox[0] = center[0]-one_edge//2
-        bbox[1] = center[1]-one_edge//2
-        bbox[2] = center[0]+one_edge//2
-        bbox[3] = center[1]+one_edge//2
+        bbox[0] = center[0] - one_edge // 2
+        bbox[1] = center[1] - one_edge // 2
+        bbox[2] = center[0] + one_edge // 2
+        bbox[3] = center[1] + one_edge // 2
 
-        #crop
+        # crop
         bbox = bbox.astype(np.int)
         crop_image = bimg[bbox[1]:bbox[3], bbox[0]:bbox[2], :]
-
 
         h, w, _ = crop_image.shape
         crop_image = cv2.resize(crop_image, (cfg.KEYPOINTS.input_shape[1], cfg.KEYPOINTS.input_shape[0]))
@@ -107,10 +96,8 @@ class FaceLandmark:
 
         crop_image = crop_image.astype(np.float32)
 
-
         ####run with tf model
         keypoints, state = self.simple_run(crop_image)
-
 
         ##recorver, and grouped as [68,2]
         res = keypoints[0][:self.keypoint_num].reshape((-1, 2))
@@ -120,15 +107,14 @@ class FaceLandmark:
         landmark = []
         for _index in range(res.shape[0]):
             x_y = res[_index]
-            landmark.append([int(x_y[0] * cfg.KEYPOINTS.input_shape[0] + bbox[0] -add),
-                             int(x_y[1] * cfg.KEYPOINTS.input_shape[1] + bbox[1] -add)])
+            landmark.append([int(x_y[0] * cfg.KEYPOINTS.input_shape[0] + bbox[0] - add),
+                             int(x_y[1] * cfg.KEYPOINTS.input_shape[1] + bbox[1] - add)])
 
         landmark = np.array(landmark, np.float32)
 
-        return landmark,state
+        return landmark, state
 
-
-    def init_model(self,*args):
+    def init_model(self, *args):
 
         if len(args) == 1:
             use_pb = True
