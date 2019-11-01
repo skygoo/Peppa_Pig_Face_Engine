@@ -60,7 +60,10 @@ class FaceAna():
                               np.max(landmarks[i][:, 1])])
             tmp_box = np.array(track)
 
+            print("tmp_box", tmp_box)
+            print("boxes_return", boxes_return)
             self.track_box = self.judge_boxs(boxes_return, tmp_box)
+            print("self.track_box", self.track_box)
 
         return self.track_box, landmarks, states
 

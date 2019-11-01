@@ -101,6 +101,8 @@ class FaceLandmark:
 
         ##recorver, and grouped as [68,2]
         res = keypoints[0][:self.keypoint_num].reshape((-1, 2))
+        # print(res[:, 0])
+
         res[:, 0] = res[:, 0] * w / cfg.KEYPOINTS.input_shape[1]
         res[:, 1] = res[:, 1] * h / cfg.KEYPOINTS.input_shape[0]
 
@@ -109,7 +111,7 @@ class FaceLandmark:
             x_y = res[_index]
             landmark.append([int(x_y[0] * cfg.KEYPOINTS.input_shape[0] + bbox[0] - add),
                              int(x_y[1] * cfg.KEYPOINTS.input_shape[1] + bbox[1] - add)])
-
+        print("landmark", landmark)
         landmark = np.array(landmark, np.float32)
 
         return landmark, state
