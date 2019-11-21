@@ -8,11 +8,14 @@ from threading import Timer
 
 from lib.core.api.facer import FaceAna
 from lib.core.headpose.pose import get_head_pose, line_pairs
+from lib.core.track.socket import MayaSocket, Marker
 
 
 class Test:
     def __init__(self):
         self.facer = FaceAna()
+        self.ms = MayaSocket()
+
         self.frame = 0
         self.inc = 1
 
@@ -38,45 +41,35 @@ class Test:
 
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
 
-            star = time.time()
+            # str_time = time.time()
             boxes, landmarks, states = self.facer.run(image)
 
-            duration = time.time() - star
-            # print('one iamge cost %f s' % (duration))
+            if len(landmarks) > 0:
+                keypoints = []
+                keypoints.append(landmarks[0][19])
+                keypoints.append(landmarks[0][21])
+                keypoints.append(landmarks[0][22])
+                keypoints.append(landmarks[0][24])
+                keypoints.append(landmarks[0][41])
+                keypoints.append(landmarks[0][46])
+                keypoints.append(landmarks[0][31])
+                keypoints.append(landmarks[0][35])
+                keypoints.append(landmarks[0][48])
+                keypoints.append(landmarks[0][51])
+                keypoints.append(landmarks[0][54])
+                keypoints.append(landmarks[0][57])
 
-            for face_index in range(landmarks.shape[0]):
+                # print(time.time() - str_time)
 
-                #######head pose
-                reprojectdst, euler_angle = get_head_pose(landmarks[face_index], img_show)
 
-                if args.mask:
-                    face_bbox_keypoints = np.concatenate(
-                        (landmarks[face_index][:17, :], np.flip(landmarks[face_index][17:27, :], axis=0)), axis=0)
 
-                    pattern = cv2.fillPoly(pattern, [face_bbox_keypoints.astype(np.int)], (1., 1., 1.))
-
-                for start, end in line_pairs:
-                    cv2.line(img_show, reprojectdst[start], reprojectdst[end], (0, 0, 255), 2)
-
-                cv2.putText(img_show, "X: " + "{:7.2f}".format(euler_angle[0, 0]), (20, 20), cv2.FONT_HERSHEY_SIMPLEX,
-                            0.75, (0, 0, 0), thickness=2)
-                cv2.putText(img_show, "Y: " + "{:7.2f}".format(euler_angle[1, 0]), (20, 50), cv2.FONT_HERSHEY_SIMPLEX,
-                            0.75, (0, 0, 0), thickness=2)
-                cv2.putText(img_show, "Z: " + "{:7.2f}".format(euler_angle[2, 0]), (20, 80), cv2.FONT_HERSHEY_SIMPLEX,
-                            0.75, (0, 0, 0), thickness=2)
-
-                for landmarks_index in range(landmarks[face_index].shape[0]):
-                    x_y = landmarks[face_index][landmarks_index]
+                for landmarks_index in range(12):
+                    x_y = keypoints[landmarks_index]
                     cv2.circle(img_show, (int(x_y[0]), int(x_y[1])), 3,
-                               (222, 222, 222), -1)
+                               (0, 0, 225), -1)
 
-            cv2.namedWindow("capture", 0)
-            print(img_show.shape)
+
             cv2.imshow("capture", img_show)
-
-            if args.mask:
-                cv2.namedWindow("masked", 0)
-                cv2.imshow("masked", image * pattern)
 
             key = cv2.waitKey(1)
             if key == ord('q'):
