@@ -2,8 +2,9 @@ import cv2
 import time
 import numpy as np
 import argparse
-from threading import Timer
+import time
 from datetime import datetime
+from threading import Timer
 
 from lib.core.api.facer import FaceAna
 from lib.core.headpose.pose import get_head_pose, line_pairs
@@ -25,13 +26,12 @@ class Test:
     def video(self, video_path_or_cam):
         vide_capture = cv2.VideoCapture(video_path_or_cam)
 
-        # vide_capture.set(3, 640)
-        # vide_capture.set(4, 480)
-
         while 1:
 
             ret, image = vide_capture.read()
+
             self.frame += 1
+
             pattern = np.zeros_like(image)
 
             img_show = image.copy()
@@ -71,6 +71,7 @@ class Test:
                                (222, 222, 222), -1)
 
             cv2.namedWindow("capture", 0)
+            print(img_show.shape)
             cv2.imshow("capture", img_show)
 
             if args.mask:
@@ -96,7 +97,9 @@ def build_argparse():
 
 if __name__ == '__main__':
     p = Test()
+
     args = build_argparse()
+
     p.printTime()
     if args.video is not None:
         p.video(args.video)

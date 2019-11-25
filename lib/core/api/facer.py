@@ -15,9 +15,11 @@ class FaceAna():
     '''
 
     def __init__(self):
+
         self.face_detector = FaceDetector()
         self.face_landmark = FaceLandmark()
         self.trace = GroupTrack()
+        self.trace_standardized = GroupTrack()
 
         ###another thread should run detector in a slow way and update the track_box
         self.track_box = None
@@ -42,16 +44,17 @@ class FaceAna():
         else:
             boxes = self.track_box
             self.previous_image = image
-        # print('facebox detect cost', time.time() - start)
+        # print('facebox detect cost',time.time()-start)
 
         if boxes.shape[0] > self.top_k:
             boxes = self.sort(boxes)
 
         boxes_return = np.array(boxes)
 
-        landmarks, states = self.face_landmark(image, boxes)
+        landmarks_standardized, landmarks, states = self.face_landmark.batch_call(image, boxes)
 
         landmarks = self.trace.calculate(image, landmarks)
+        landmarks_standardized = self.trace_standardized.calculate(image, landmarks_standardized)
 
         if 1:
             track = []
@@ -60,12 +63,9 @@ class FaceAna():
                               np.max(landmarks[i][:, 1])])
             tmp_box = np.array(track)
 
-            print("tmp_box", tmp_box)
-            print("boxes_return", boxes_return)
             self.track_box = self.judge_boxs(boxes_return, tmp_box)
-            print("self.track_box", self.track_box)
 
-        return self.track_box, landmarks, states
+        return self.track_box, landmarks_standardized, landmarks, states
 
     def diff_frames(self, previous_frame, image):
         if previous_frame is None:

@@ -23,7 +23,7 @@ def to_np_array(image_data, dtype=np.uint8):
 
 facer = FaceAna()
 # remind 消除初始化时间
-boxes, landmarks, states = facer.run(cv2.imread("D:\pycharmProject\Peppa_Pig_Face_Engine\img\\test_32.jpg"))
+# boxes, landmarks, states = facer.run(cv2.imread("D:\\EB\\Peppa_Pig_Face_Engine-dev-t2\\test_32.jpg"))
 
 
 class GrpcServer(service.FaceServerServicer):
