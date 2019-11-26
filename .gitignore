@@ -7,3 +7,5 @@
 model/
 img/
 venv/
+haarcascade_frontalface_alt2.xml
+lbfmodel.yaml
