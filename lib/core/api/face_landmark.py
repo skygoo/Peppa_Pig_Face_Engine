@@ -108,7 +108,7 @@ class FaceLandmark:
         if len(bboxes) == 0:
             return np.array([]), np.array([])
 
-        images_batched, details_batched, standardize_details = self.batch_preprocess(image, bboxes)
+        images_batched, details_batched = self.batch_preprocess(image, bboxes)
 
         res = self.model.inference(images_batched)
 
@@ -118,15 +118,14 @@ class FaceLandmark:
         states = res['cls'].numpy()
 
         landmark = self.batch_postprocess(landmark, details_batched)
-        # landmark_standardized = landmark.copy()
-        # landmark_standardized = self.standardize_postprocess(landmark_standardized, standardize_details)
+        landmark_standardized = self.standardize_postprocess(landmark_standardized)
 
-        for i, crop_image in enumerate(images_batched):
-            for landmarks_index in range(len(landmark)):
-                x_y = landmark_standardized[0][landmarks_index]
-                cv2.circle(crop_image, (int(x_y[0]), int(x_y[1])), 3,
-                           (0, 0, 225), -1)
-            cv2.imshow('i am watching u * * %d' % i, crop_image)
+        # for i, crop_image in enumerate(images_batched):
+        #     for landmarks_index in range(len(landmark[0])):
+        #         x_y = landmark_standardized[0][landmarks_index]
+        #         cv2.circle(crop_image, (int(x_y[0]), int(x_y[1])), 3,
+        #                    (0, 0, 225), -1)
+        #     cv2.imshow('i am watching u * * %d' % i, crop_image)
 
         return landmark_standardized, landmark, states
 
@@ -139,7 +138,6 @@ class FaceLandmark:
 
         images_batched = []
         details = []  ### details about the extra params that needed in postprocess
-        stadardize_details = []
 
         for i, bbox in enumerate(bboxes):
             ##preprocess
@@ -174,9 +172,8 @@ class FaceLandmark:
             images_batched.append(crop_image)
 
             details.append([h, w, bbox[1], bbox[0], add])
-            stadardize_details.append([bbox[0], bbox[1]])
 
-        return np.array(images_batched), np.array(details), np.array(stadardize_details)
+        return np.array(images_batched), np.array(details)
 
     def batch_postprocess(self, landmark, details):
 
@@ -190,8 +187,8 @@ class FaceLandmark:
 
         return landmark
 
-    def standardize_postprocess(selfself, landmark, details):
-        landmark[:, :, 0] = landmark[:, :, 0] - details[:, 0:1]
-        landmark[:, :, 1] = landmark[:, :, 1] - details[:, 1:]
+    def standardize_postprocess(selfself, landmark):
+        landmark[:, :, 0] = landmark[:, :, 0] * cfg.KEYPOINTS.input_shape[1]
+        landmark[:, :, 1] = landmark[:, :, 1] * cfg.KEYPOINTS.input_shape[0]
 
         return landmark

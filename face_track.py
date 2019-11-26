@@ -117,7 +117,6 @@ class Test:
                 else:
                     for i in range(Marker.MARKER_COUNT.value):
                         if distance(self.face_prev_data.markers[i], face_data.markers[i]) > 100:
-                            print("continue")
                             continue
                         self.face_prev_data.markers[i] = face_data.markers[i].copy()
 
